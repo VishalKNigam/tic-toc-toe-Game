@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <script src="./index.js" defer></script>
+    <title>Tic-Tac-Toe</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <div id="game">
+      <!-- Cell Values
+                 0  1  2
+                 3  4  5
+                 6  7  8
+            -->
+      <div class="grid-cell" data-value="0"></div>
+      <div class="grid-cell" data-value="1"></div>
+      <div class="grid-cell" data-value="2"></div>
+      <div class="grid-cell" data-value="3"></div>
+      <div class="grid-cell" data-value="4"></div>
+      <div class="grid-cell" data-value="5"></div>
+      <div class="grid-cell" data-value="6"></div>
+      <div class="grid-cell" data-value="7"></div>
+      <div class="grid-cell" data-value="8"></div>
+    </div>
+    <div class="status">
+      <!-- add necessary elements here -->
+      <span class="current-player">Its X turn</span>
+    </div>
+    <div class="game-over">
+      <!-- add necessary elements here -->
+      <span class="game-over-text"></span>
+      <button class="restart">Restart</button>
+    </div>
+    < <footer>
+      <p>&copy; 2023 Your Website Name. All rights reserved.</p>
+    </footer>
+    <script>
+      // Get all the grid cells
+      const cells = document.querySelectorAll(".grid-cell");
+
+      // Add event listener to each cell
+      cells.forEach((cell) => {
+        cell.addEventListener("click", handleCellClick);
+      });
+
+      // Store the current player
+      let currentPlayer = "x";
+
+      // Function to handle cell click
+      function handleCellClick(event) {
+        const cell = event.target;
+
+        // Check if the cell is already marked
+        if (cell.classList.contains("disabled")) {
+          return;
+        }
+
+        // Mark the cell with the current player's symbol
+        cell.classList.add(currentPlayer);
+        cell.classList.add("disabled");
+
+        // Check if the current player wins or it's a draw
+        if (checkWin() || checkDraw()) {
+          // Disable all cells
+          cells.forEach((cell) => {
+            cell.classList.add("disabled");
+          });
+
+          // Update game over text
+          const gameOverText = document.querySelector(".game-over-text");
+          if (checkWin()) {
+            gameOverText.textContent = `Player ${currentPlayer.toUpperCase()} wins!`;
+          } else {
+            gameOverText.textContent = "Draw!";
+          }
+        } else {
+          // Switch to the next player
+          currentPlayer = currentPlayer === "x" ? "o" : "x";
+
+          // Update the current player text
+          const currentPlayerText = document.querySelector(".current-player");
+          currentPlayerText.textContent = `Its ${currentPlayer.toUpperCase()} turn`;
+        }
+      }
+
+      // Function to check if a player wins
+      function checkWin() {
+        const winningCombinations = [
+          [0, 1, 2], // Rows
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6], // Columns
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8], // Diagonals
+          [2, 4, 6],
+        ];
+
+        for (const combination of winningCombinations) {
+          const [a, b, c] = combination;
+
+          if (
+            cells[a].classList.contains(currentPlayer) &&
+            cells[b].classList.contains(currentPlayer) &&
+            cells[c].classList.contains(currentPlayer)
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      // Function to check if it's a draw
+      function checkDraw() {
+        return Array.from(cells).every((cell) =>
+          cell.classList.contains("disabled")
+        );
+      }
+
+      // Restart the game
+      const restartButton = document.querySelector(".restart");
+      restartButton.addEventListener("click", () => {
+        // Remove all class names and text content from cells
+        cells.forEach((cell) => {
+          cell.className = "grid-cell";
+          cell.textContent = "";
+        });
+
+        // Reset the game over text
+        const gameOverText = document.querySelector(".game-over-text");
+        gameOverText.textContent = "";
+
+        // Reset the current player
+        currentPlayer = "x";
+
+        // Update the current player text
+        const currentPlayerText = document.querySelector(".current-player");
+        currentPlayerText.textContent = "Its X turn";
+
+        // Enable all cells
+        cells.forEach((cell) => {
+          cell.classList.remove("disabled");
+        });
+      });
+    </script>
+</html>
